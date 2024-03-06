@@ -6,12 +6,13 @@ namespace Products.Api.Infrastructure.Repository;
 
 public class ProductRepository : IProductRepository
 {
-    private readonly string path = "products.json";
+    private const string Path = "products.json";
+
     public ProductRepository()
     {
-        if (!File.Exists(path))
+        if (!File.Exists(Path))
         {
-            File.Create(path);
+            File.Create(Path).Close();
         }
     }
     public async Task<List<Product>?> GetProductsAsync()
@@ -30,8 +31,10 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product> CreateProduct(Product product)
     {
-        await using StreamWriter writer = new StreamWriter(path, true);
-        var json = JsonConvert.SerializeObject(product);
+        var products = await GetProducts();
+        products.Add(product);
+        await using StreamWriter writer = new StreamWriter(Path);
+        var json = JsonConvert.SerializeObject(products);
         await writer.WriteAsync(json);
         return product;
     }
@@ -43,7 +46,7 @@ public class ProductRepository : IProductRepository
         var index = products.FindIndex(p => p.Id == product.Id);
         products[index] = product;
         
-        await using StreamWriter writer = new StreamWriter(path, false);
+        await using StreamWriter writer = new StreamWriter(Path, false);
         var json = JsonConvert.SerializeObject(products);
         await writer.WriteAsync(json);
         return product;
@@ -58,7 +61,7 @@ public class ProductRepository : IProductRepository
         var index = products.FindIndex(p => p.Id == id);
         products.RemoveAt(index);
         
-        await using StreamWriter writer = new StreamWriter(path, false);
+        await using StreamWriter writer = new StreamWriter(Path, false);
         var json = JsonConvert.SerializeObject(products);
         await writer.WriteAsync(json);
         return true;
@@ -74,8 +77,8 @@ public class ProductRepository : IProductRepository
 
     private async Task<List<Product>> GetProducts()
     {
-        using StreamReader reader = new StreamReader(path);
+        using StreamReader reader = new StreamReader(Path);
         string json = await reader.ReadToEndAsync();
-        return JsonConvert.DeserializeObject<List<Product>>(json) ?? throw new InvalidOperationException();
+        return JsonConvert.DeserializeObject<List<Product>>(json) ?? new List<Product>();
     }
 }

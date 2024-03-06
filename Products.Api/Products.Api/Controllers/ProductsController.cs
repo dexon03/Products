@@ -11,35 +11,35 @@ public class ProductsController(IProductService productService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
-        var result = await productService.GetProducts();
+        var result = await productService.GetProductsAsync();
         return Ok(result);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProduct(Guid id)
     {
-        var result = await productService.GetProduct(id);
+        var result = await productService.GetProductAsync(id);
         return Ok(result);
     }
     
     [HttpPost]
     public async Task<IActionResult> CreateProduct(ProductCreate product)
     {
-        var result = await productService.CreateProduct(product);
+        var result = await productService.CreateProductAsync(product);
         return Ok(result);
     }
     
     [HttpPut]
     public async Task<IActionResult> UpdateProduct(ProductUpdate product)
     {
-        var result = await productService.UpdateProduct(product);
+        var result = await productService.UpdateProductAsync(product);
         return Ok(result);
     }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
-        var result = await productService.DeleteProduct(id);
+        var result = await productService.DeleteProductAsync(id);
         
         return Ok(result ? "Product deleted" : "Product not deleted");
     }

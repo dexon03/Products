@@ -5,9 +5,9 @@ namespace Products.Api.Domain.Interfaces;
 
 public interface IProductService
 {
-    Task<List<Product>> GetProducts();
-    Task<Product> GetProduct(Guid id);
-    Task<Product> CreateProduct(ProductCreate product);
-    Task<Product> UpdateProduct(ProductUpdate product);
-    Task<bool> DeleteProduct(Guid id);
+    Task<List<Product>> GetProductsAsync();
+    Task<Product> GetProductAsync(Guid id);
+    Task<Product> CreateProductAsync(ProductCreate product);
+    Task<Product> UpdateProductAsync(ProductUpdate product);
+    Task<bool> DeleteProductAsync(Guid id);
 }
