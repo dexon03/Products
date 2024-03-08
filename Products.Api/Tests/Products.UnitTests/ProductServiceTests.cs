@@ -21,7 +21,7 @@ public class ProductServiceTests
     }
     
     [Fact]
-    public async Task GetProducts_ShouldReturnListOfProducts()
+    public void GetProducts_ShouldReturnListOfProducts()
     {
         // Arrange
         List<Product> products = new()
@@ -30,10 +30,10 @@ public class ProductServiceTests
             new() { Id = Guid.NewGuid(), Name = "Product2", Price = 100 }
         };
         _productRepository.GetProducts()!
-            .Returns(Task.FromResult(products));
+            .Returns(products);
         
         // Act
-        List<Product> result = await _productService.GetProducts();
+        List<Product> result = _productService.GetProducts();
         
         // Assert
         result.Should().NotBeNull();
@@ -46,10 +46,10 @@ public class ProductServiceTests
         // Arrange
         var product = new Product {Id = Guid.NewGuid(), Name = "Product1", Price = 100};
         _productRepository.GetProduct(Arg.Any<Guid>())!
-            .Returns(c => Task.FromResult(product));
+            .Returns(c => product);
         
         // Act
-        var result = await _productService.GetProduct(product.Id);
+        var result =  _productService.GetProduct(product.Id);
         
         // Assert
         result.Should().NotBeNull();
@@ -57,17 +57,17 @@ public class ProductServiceTests
     }
     
     [Fact]
-    public async Task GetProductAsync_WhenProductNotExists_ShouldReturnNull()
+    public void GetProductAsync_WhenProductNotExists_ShouldReturnNull()
     {
         // Arrange
         _productRepository.GetProduct(Arg.Any<Guid>())!
-            .Returns(c => Task.FromResult<Product?>(null));
+            .Returns(c => null!);
         
         // Act
-        var result = await _productService.GetProduct(Guid.NewGuid());
+        Func<Product> act = () =>  _productService.GetProduct(Guid.NewGuid());
         
         // Assert
-        result.Should().BeNull();
+        act.Should().Throw<ArgumentException>().WithMessage("Product not exists");
     }
     
     [Fact]
