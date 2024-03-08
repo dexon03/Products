@@ -29,11 +29,11 @@ public class ProductServiceTests
             new() { Id = Guid.NewGuid(), Name = "Product1", Price = 100 },
             new() { Id = Guid.NewGuid(), Name = "Product2", Price = 100 }
         };
-        _productRepository.GetProductsAsync()!
+        _productRepository.GetProducts()!
             .Returns(Task.FromResult(products));
         
         // Act
-        List<Product> result = await _productService.GetProductsAsync();
+        List<Product> result = await _productService.GetProducts();
         
         // Assert
         result.Should().NotBeNull();
@@ -45,11 +45,11 @@ public class ProductServiceTests
     {
         // Arrange
         var product = new Product {Id = Guid.NewGuid(), Name = "Product1", Price = 100};
-        _productRepository.GetProductAsync(Arg.Any<Guid>())!
+        _productRepository.GetProduct(Arg.Any<Guid>())!
             .Returns(c => Task.FromResult(product));
         
         // Act
-        var result = await _productService.GetProductAsync(product.Id);
+        var result = await _productService.GetProduct(product.Id);
         
         // Assert
         result.Should().NotBeNull();
@@ -60,11 +60,11 @@ public class ProductServiceTests
     public async Task GetProductAsync_WhenProductNotExists_ShouldReturnNull()
     {
         // Arrange
-        _productRepository.GetProductAsync(Arg.Any<Guid>())!
+        _productRepository.GetProduct(Arg.Any<Guid>())!
             .Returns(c => Task.FromResult<Product?>(null));
         
         // Act
-        var result = await _productService.GetProductAsync(Guid.NewGuid());
+        var result = await _productService.GetProduct(Guid.NewGuid());
         
         // Assert
         result.Should().BeNull();
@@ -78,7 +78,7 @@ public class ProductServiceTests
         var product = new Product {Id = Guid.NewGuid(), Name = "Product1", Price = 100};
         _mapper.Map<Product>(productCreate)!
             .Returns(product);
-        _productRepository.CreateProduct(product)!
+        _productRepository.CreateProductAsync(product)!
             .Returns(Task.FromResult(product));
         
         // Act
@@ -99,7 +99,7 @@ public class ProductServiceTests
             .Returns(product);
         _productRepository.IsProductExists(Arg.Any<Guid>())!
             .Returns(true);
-        _productRepository.UpdateProduct(product)!
+        _productRepository.UpdateProductAsync(product)!
             .Returns(Task.FromResult(product));
         
         // Act
@@ -134,7 +134,7 @@ public class ProductServiceTests
         var id = Guid.NewGuid();
         _productRepository.IsProductExists(id)!
             .Returns(true);
-        _productRepository.DeleteProduct(id)!
+        _productRepository.DeleteProductAsync(id)!
             .Returns(Task.FromResult(true));
         
         // Act

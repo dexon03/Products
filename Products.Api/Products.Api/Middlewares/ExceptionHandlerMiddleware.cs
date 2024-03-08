@@ -25,7 +25,7 @@ public class ExceptionHandlerMiddleware
     
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var result = JsonConvert.SerializeObject(new { error = exception.Message });
+        var result = JsonConvert.SerializeObject(new { message = exception.Message });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
         return context.Response.WriteAsync(result);

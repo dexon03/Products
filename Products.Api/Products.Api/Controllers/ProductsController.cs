@@ -9,16 +9,16 @@ namespace Products.Api.Controllers;
 public class ProductsController(IProductService productService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetProducts()
+    public IActionResult GetProducts()
     {
-        var result = await productService.GetProductsAsync();
+        var result = productService.GetProducts();
         return Ok(result);
     }
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetProduct(Guid id)
+    public IActionResult GetProduct(Guid id)
     {
-        var result = await productService.GetProductAsync(id);
+        var result =  productService.GetProduct(id);
         return Ok(result);
     }
     
@@ -41,6 +41,6 @@ public class ProductsController(IProductService productService) : ControllerBase
     {
         var result = await productService.DeleteProductAsync(id);
         
-        return Ok(result ? "Product deleted" : "Product not deleted");
+        return Ok();
     }
 }

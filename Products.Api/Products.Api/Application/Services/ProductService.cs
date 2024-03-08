@@ -15,15 +15,16 @@ public class ProductService : IProductService
         _productRepository = productRepository;
         _mapper = mapper;
     }
-    public async Task<List<Product>> GetProductsAsync()
+    
+    public List<Product> GetProducts()
     {
-        var products = await _productRepository.GetProductsAsync();
+        var products =  _productRepository.GetProducts();
         return products;
     }
 
-    public async Task<Product> GetProductAsync(Guid id)
+    public Product GetProduct(Guid id)
     {
-        var product = await _productRepository.GetProductAsync(id);
+        var product = _productRepository.GetProduct(id);
         if (product is null)
         {
             throw new ArgumentException("Product not exists");
@@ -34,29 +35,29 @@ public class ProductService : IProductService
     public async Task<Product> CreateProductAsync(ProductCreate product)
     {
         var productModel = _mapper.Map<Product>(product);
-        var createdProduct = await _productRepository.CreateProduct(productModel);
+        var createdProduct = await _productRepository.CreateProductAsync(productModel);
         return createdProduct;
     }
 
     public async Task<Product> UpdateProductAsync(ProductUpdate product)
     {
         var productModel = _mapper.Map<Product>(product);
-        await ThrowIfProductNotExists(productModel.Id);
+        ThrowIfProductNotExists(productModel.Id);
 
-        var updatedProduct = await _productRepository.UpdateProduct(productModel);
+        var updatedProduct = await _productRepository.UpdateProductAsync(productModel);
         return updatedProduct;
     }
 
     public async Task<bool> DeleteProductAsync(Guid id)
     {
-        await ThrowIfProductNotExists(id);
-        var isDeleted = await _productRepository.DeleteProduct(id);
+        ThrowIfProductNotExists(id);
+        var isDeleted = await _productRepository.DeleteProductAsync(id);
         return isDeleted;
     }
     
-    private async Task ThrowIfProductNotExists(Guid id)
+    private void ThrowIfProductNotExists(Guid id)
     {
-        var isProductExists = await _productRepository.IsProductExists(id);
+        var isProductExists = _productRepository.IsProductExists(id);
         if (!isProductExists)
         {
             throw new ArgumentException("Product not exists");
